@@ -5,10 +5,15 @@
 # Welcome message
 print("Welcome to your personal flashcard trainer!")
 
-# Variables
-name = input("What is your name? ") # Fetch from user and save to variable
-max_cards = 20
+# Fetch from user and save to variable
+name = input("What is your name? ")
 
-# Using f-strings 
+# Confirm name
 print(f"My name is {name}")
-print(f"I want to practice at most {max_cards} cards per session")
+
+# Fetch from user and save to variable
+max_cards = int(input("How many cards would you like to practice each session? "))
+
+# Confirm number maximum number of cards per session
+print(f"I want to practice at most {max_cards} cards per session ({type(max_cards)})")
+# For the real app, remove (type(max_cards)) since there's no need for this to be displayed
