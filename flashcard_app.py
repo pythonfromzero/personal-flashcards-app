@@ -15,5 +15,12 @@ print(f"My name is {name}")
 max_cards = int(input("How many cards would you like to practice each session? "))
 
 # Confirm number maximum number of cards per session
-print(f"I want to practice at most {max_cards} cards per session ({type(max_cards)})")
-# For the real app, remove (type(max_cards)) since there's no need for this to be displayed
+print(f"I want to practice at most {max_cards} cards per session")
+
+# Card and score variables (Task 1)
+num_cards_completed = 10
+num_cards_correct = 5
+score = (num_cards_correct/num_cards_completed) * 100
+
+# Display score information (Task 2)
+print(f"You have answered {num_cards_correct} out of {num_cards_completed} correctly. Your score so far is {score}%.")
