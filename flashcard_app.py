@@ -1,4 +1,3 @@
-
 # Created by: Alex Ubuntu
 # Date: 01.01.2026
 # Purpose: A personal flashcard trainer to help with learning
@@ -23,6 +22,10 @@ ABSOLUTE_MAX_CARDS = 100
 
 # Flashcards list
 flashcards = {'dog': 'Mammalia', 'cat': 'Mammalia', 'pig': 'Mammalia', 'parrot': 'Aves', 'cow': 'Mammalia'}
+
+# Function to display score information
+def display_score_info():
+    print(f"\nYou have answered {num_cards_correct} out of {num_cards_completed} correctly. Your score is {score}%.")
 
 while True:
     print("\nSelect an option by entering a number")
@@ -97,9 +100,11 @@ while True:
             # preferred maximum number of cards
             if num_cards_completed >= max_cards:
                 print("\nWell done on completing your practice session!")
+                display_score_info()
                 break
         
         print("\nWell done on completing your practice session!")
+        display_score_info()
     elif choice == "3":
 
         # Handle case where no cards have been completed yet.
@@ -108,15 +113,13 @@ while True:
             continue
         score = (num_cards_correct/num_cards_completed) * 100
 
-        # Display score information
-        print(f"\nYou have answered {num_cards_correct} out of {num_cards_completed} correctly. Your score so far is {score}%.")
+        display_score_info()
 
     
     elif choice == "4":
         print(f"We hope you enjoyed your practice session today, {name}.")
         
-        # Display score information
-        print(f"You have answered {num_cards_correct} out of {num_cards_completed} correctly. Your score for this session {score}%.")
+        display_score_info()
 
         # Display feedback message based on score
         if score > 90 and score <= 100:
