@@ -1,4 +1,3 @@
-
 # Created by: Alex Ubuntu
 # Date: 01.01.2026
 # Purpose: A personal flashcard trainer to help with learning
@@ -67,11 +66,14 @@ while True:
             
 
     elif choice == "2":
+         
         # Iterate through flashcards dictionary
         # The questions q are the keys, and the answers a are the values
         for q, a in flashcards.items():
-            print(f"\nWhat class are {q}s in?")
-            print(f"Answer: {a}")
+            # Ask user question and save response into variable
+            user_answer = input(f"\nWhat class are {q}s in? ")
+            # Display user's answer and correct answer
+            print(f"Your answer: {user_answer}, Correct answer: {a}")
 
     elif choice == "3":
 
@@ -85,13 +87,13 @@ while True:
         print(f"\nYou have answered {num_cards_correct} out of {num_cards_completed} correctly. Your score so far is {score}%.")
 
         # Display feedback message based on score
-        if score > 0.9 and score <= 1:
+        if score > 90 and score <= 100:
             print("Excellent work!")
-        elif score > 0.7 and score <= 0.9:
+        elif score > 70 and score <= 90:
             print("Good job!")
-        elif score > 0.5 and score <= 0.7:
+        elif score > 50 and score <= 70:
             print("Keep practicing!")
-        elif score > 0 and score <= 0.5: 
+        elif score > 0 and score <= 50: 
             print("Need more study time!")
         else:
             print("Score lies outside range")
