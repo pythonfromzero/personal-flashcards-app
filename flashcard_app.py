@@ -20,6 +20,9 @@ score = 0
 # Set absolute maximum number of cards so that the user can't ask for too many
 ABSOLUTE_MAX_CARDS = 100
 
+# Flashcards list
+flashcards = ('dog', 'cat', 'pig', 'parrot', 'cow')
+
 while True:
     print("\nSelect an option by entering a number")
     print("1: Set the number of cards you wish to practice")
@@ -63,7 +66,9 @@ while True:
             
 
     elif choice == "2":
-        print("\nStarting flashcards...")
+        
+        for card in flashcards:
+            print(card)
 
     elif choice == "3":
 
@@ -98,5 +103,5 @@ while True:
         break
     
     else:
-        # Clarify instruction to get valid input (Bonus Task)
+        # Clarify instruction to get valid input
         print("\nInvalid value entered. Please make sure you enter just a single digit (no other words): 1, 2, 3 or 4, to select an option.")
