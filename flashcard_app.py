@@ -1,3 +1,4 @@
+
 # Created by: Alex Ubuntu
 # Date: 01.01.2026
 # Purpose: A personal flashcard trainer to help with learning
@@ -66,8 +67,14 @@ while True:
             
 
     elif choice == "2":
+        
+
         # Iterate through flashcards dictionary
         # The questions q are the keys, and the answers a are the values
+
+        # Using a for loop means that the number of flashcards displayed
+        # is limited by the number of items in flashcards so the user
+        # may end up practicing fewer cards than they specified  
         for q, a in flashcards.items():
             # Ask user question and save response into variable
             user_answer = input(f"\nWhat class are {q}s in? ")
@@ -83,7 +90,16 @@ while True:
                 # Increment count of cards answered correctly
                 num_cards_correct += 1
                 print("Correct")
-
+            else:
+                print("Incorrect")
+            
+            # Check if number of cards completed has hit the user's
+            # preferred maximum number of cards
+            if num_cards_completed >= max_cards:
+                print("\nWell done on completing your practice session!")
+                break
+        
+        print("\nWell done on completing your practice session!")
     elif choice == "3":
 
         # Handle case where no cards have been completed yet.
@@ -95,8 +111,6 @@ while True:
         # Display score information
         print(f"\nYou have answered {num_cards_correct} out of {num_cards_completed} correctly. Your score so far is {score}%.")
 
-        # Removed feedback message here since we are assuming that the user might still 
-        # be in the middle of a practice session
     
     elif choice == "4":
         print(f"We hope you enjoyed your practice session today, {name}.")
