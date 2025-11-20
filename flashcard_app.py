@@ -57,8 +57,19 @@ def display_score_info():
     if num_cards_completed <=0:
         print("You need to practice before you can get a score.")
     else:
+        # Calculate score
         score = (num_cards_correct/num_cards_completed) * 100
         print(f"\nYou have answered {num_cards_correct} out of {num_cards_completed} correctly. Your score is {score}%.")
+
+# Function to write score information to file
+def write_score_info():
+    # Calculate score
+    score = (num_cards_correct/num_cards_completed) * 100
+    # Open the file
+    with open('progress.txt', 'a') as file:
+        # Write score information and new line so next entry appears on
+        # row below
+        file.write(f"{num_cards_completed},{num_cards_correct},{score}\n")
 
 while True:
     print("\nSelect an option by entering a number")
@@ -130,6 +141,9 @@ while True:
             else:
                 print("Incorrect")
             
+            # Write score info out with each card practised
+            write_score_info()
+
             # Check if number of cards completed has hit the user's
             # preferred maximum number of cards
             if num_cards_completed >= max_cards:
