@@ -66,6 +66,11 @@ while True:
         print("\nStarting flashcards...")
 
     elif choice == "3":
+
+        # Handle case where no cards have been completed yet.
+        if num_cards_completed <=0:
+            print("You need to practice before you can get a score.")
+            continue
         score = (num_cards_correct/num_cards_completed) * 100
 
         # Display score information
@@ -84,9 +89,14 @@ while True:
             print("Score lies outside range")
     
     elif choice == "4":
-        print("Exiting...")
+        print(f"We hope you enjoyed your practice session today, {name}.")
+        
+        # Display score information
+        print(f"You have answered {num_cards_correct} out of {num_cards_completed} correctly. Your score for this session {score}%.")
+
+        print("Look forward to seeing you again soon!")
         break
     
     else:
         # Clarify instruction to get valid input (Bonus Task)
-        print("\nInvalid value entered. Please make sure you enter just a single digit: 1, 2, 3 or 4, to select an option.")
+        print("\nInvalid value entered. Please make sure you enter just a single digit (no other words): 1, 2, 3 or 4, to select an option.")
