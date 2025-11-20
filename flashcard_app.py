@@ -95,6 +95,15 @@ while True:
         # Display score information
         print(f"\nYou have answered {num_cards_correct} out of {num_cards_completed} correctly. Your score so far is {score}%.")
 
+        # Removed feedback message here since we are assuming that the user might still 
+        # be in the middle of a practice session
+    
+    elif choice == "4":
+        print(f"We hope you enjoyed your practice session today, {name}.")
+        
+        # Display score information
+        print(f"You have answered {num_cards_correct} out of {num_cards_completed} correctly. Your score for this session {score}%.")
+
         # Display feedback message based on score
         if score > 90 and score <= 100:
             print("Excellent work!")
@@ -104,15 +113,7 @@ while True:
             print("Keep practicing!")
         elif score > 0 and score <= 50: 
             print("Need more study time!")
-        else:
-            print("Score lies outside range")
-    
-    elif choice == "4":
-        print(f"We hope you enjoyed your practice session today, {name}.")
         
-        # Display score information
-        print(f"You have answered {num_cards_correct} out of {num_cards_completed} correctly. Your score for this session {score}%.")
-
         print("Look forward to seeing you again soon!")
         break
     
