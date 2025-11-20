@@ -10,15 +10,17 @@ name = input("What is your name? ")
 max_cards = 20 # Set a default value for max_cards
 
 # Confirm name
-print(f"My name is {name}")
+print(f"\nMy name is {name}")
 
 # Card and score variables
 num_cards_completed = 0
 num_cards_correct = 0
 score = 0
 
+# Set absolute maximum number of cards so that the user can't ask for too many
+ABSOLUTE_MAX_CARDS = 100
+
 while True:
-    # Start on new line for readability using '\n'
     print("\nSelect an option by entering a number")
     print("1: Set the number of cards you wish to practice")
     print("2: Start flashcards")
@@ -26,14 +28,39 @@ while True:
     print("4: Exit")
     
     
-    choice = input("Choose an option: ")
+    choice = input("\nChoose an option: ")
     
     if choice == "1":
-        # Fetch from user and save to variable
-        max_cards = int(input("\nHow many cards would you like to practice each session? "))
 
-        # Confirm number maximum number of cards per session
-        print(f"\nI want to practice at most {max_cards} cards per session")
+        while True:
+            # More stringent validation for input for maximum number of cards
+            
+            # Fetch input from user but don't attempt to convert the input string 
+            # to int until certain it will work 
+            entered_max_cards = input("\nHow many cards would you like to practice each session? ")
+
+            # Check if input string represents an integer
+            if entered_max_cards.isdigit():
+
+                # Convert to integer data type
+                entered_max_cards = int(entered_max_cards)
+            
+                # Check if value is within the value range 
+                # (between 1 and the absolute maximum number of cards)
+                if entered_max_cards > 0 and entered_max_cards < ABSOLUTE_MAX_CARDS:
+                    
+                    # Set the max_cards variable with the user's preference
+                    max_cards = entered_max_cards
+                    # Confirm number maximum number of cards per session
+                    print(f"\nI want to practice at most {max_cards} cards per session")
+                    break
+                else:
+                    ## Let the user know what the range should be (Bonus task).
+                    print(f"\nPlease enter a valid number bewteen 1 and {ABSOLUTE_MAX_CARDS}.")    
+            else:
+                print(f"\nPlease enter a whole number number over 0.")
+
+            
 
     elif choice == "2":
         print("\nStarting flashcards...")
@@ -45,19 +72,19 @@ while True:
         print(f"\nYou have answered {num_cards_correct} out of {num_cards_completed} correctly. Your score so far is {score}%.")
 
         # Display feedback message based on score
-        if score > 90 and score <= 100:
+        if score > 0.9 and score <= 1:
             print("Excellent work!")
-        elif score > 70 and score <= 90:
+        elif score > 0.7 and score <= 0.9:
             print("Good job!")
-        elif score > 50 and score <= 70:
+        elif score > 0.5 and score <= 0.7:
             print("Keep practicing!")
-        elif score > 0 and score <= 50: 
+        elif score > 0 and score <= 0.5: 
             print("Need more study time!")
         else:
             print("Score lies outside range")
     
     elif choice == "4":
-        print("\nExiting...")
+        print("Exiting...")
         break
     
     else:
