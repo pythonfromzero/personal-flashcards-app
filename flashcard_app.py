@@ -2,6 +2,9 @@
 # Date: 01.01.2026
 # Purpose: A personal flashcard trainer to help with learning
 
+# Import the random module
+import random
+
 # Welcome message
 print("Welcome to your personal flashcard trainer!")
 
@@ -23,8 +26,9 @@ ABSOLUTE_MAX_CARDS = 100
 # Flashcards list
 flashcards = {'dog': 'Mammalia', 'cat': 'Mammalia', 'pig': 'Mammalia', 'parrot': 'Aves', 'cow': 'Mammalia'}
 
-# Function to display score information
+# Function to calculate and display score information
 def display_score_info():
+    score = (num_cards_correct/num_cards_completed) * 100
     print(f"\nYou have answered {num_cards_correct} out of {num_cards_completed} correctly. Your score is {score}%.")
 
 while True:
@@ -72,13 +76,14 @@ while True:
     elif choice == "2":
         
 
-        # Iterate through flashcards dictionary
-        # The questions q are the keys, and the answers a are the values
-
+        # Create a list from the flashcards dictionary items
+        flashcards_list = list(flashcards.items())
+        # Shuffle the list
+        random.shuffle(flashcards_list)
         # Using a for loop means that the number of flashcards displayed
         # is limited by the number of items in flashcards so the user
         # may end up practicing fewer cards than they specified  
-        for q, a in flashcards.items():
+        for q, a in flashcards_list:
             # Ask user question and save response into variable
             user_answer = input(f"\nWhat class are {q}s in? ")
             
@@ -111,7 +116,7 @@ while True:
         if num_cards_completed <=0:
             print("You need to practice before you can get a score.")
             continue
-        score = (num_cards_correct/num_cards_completed) * 100
+        
 
         display_score_info()
 
