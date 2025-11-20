@@ -23,13 +23,42 @@ score = 0
 # Set absolute maximum number of cards so that the user can't ask for too many
 ABSOLUTE_MAX_CARDS = 100
 
-# Flashcards list
-flashcards = {'dog': 'Mammalia', 'cat': 'Mammalia', 'pig': 'Mammalia', 'parrot': 'Aves', 'cow': 'Mammalia'}
+# Set flashcards dictionary from file
+# Initialize empty dictionary
+flashcards = {}
+file_separator = ','
+
+# Open and read the file
+with open('flashcards.txt', 'r') as file:
+    lines = file.readlines()
+
+# Process each line
+for line in lines:
+    # Remove whitespace/newlines
+    line = line.strip()
+    
+    # Split by ',' separator
+    parts = line.split(file_separator)
+    
+    # Extract question and answer
+    question = parts[0]
+    answer = parts[1]
+    
+    # Add to dictionary
+    flashcards[question] = answer
+
+# Confirm loaded
+print(f"{len(flashcards)} flashcards loaded!")
 
 # Function to calculate and display score information
 def display_score_info():
-    score = (num_cards_correct/num_cards_completed) * 100
-    print(f"\nYou have answered {num_cards_correct} out of {num_cards_completed} correctly. Your score is {score}%.")
+
+    # Handle case where no cards have been completed yet.
+    if num_cards_completed <=0:
+        print("You need to practice before you can get a score.")
+    else:
+        score = (num_cards_correct/num_cards_completed) * 100
+        print(f"\nYou have answered {num_cards_correct} out of {num_cards_completed} correctly. Your score is {score}%.")
 
 while True:
     print("\nSelect an option by entering a number")
@@ -110,17 +139,11 @@ while True:
         
         print("\nWell done on completing your practice session!")
         display_score_info()
-    elif choice == "3":
 
-        # Handle case where no cards have been completed yet.
-        if num_cards_completed <=0:
-            print("You need to practice before you can get a score.")
-            continue
-        
+    elif choice == "3":
 
         display_score_info()
 
-    
     elif choice == "4":
         print(f"We hope you enjoyed your practice session today, {name}.")
         

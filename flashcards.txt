@@ -1,0 +1,5 @@
+dog,Mammalia
+cat,Mammalia
+pig,Mammalia
+parrot,Aves
+cow,Mammalia
