@@ -1,3 +1,4 @@
+
 # Created by: Alex Ubuntu
 # Date: 01.01.2026
 # Purpose: A personal flashcard trainer to help with learning
@@ -21,7 +22,7 @@ score = 0
 ABSOLUTE_MAX_CARDS = 100
 
 # Flashcards list
-flashcards = ('dog', 'cat', 'pig', 'parrot', 'cow')
+flashcards = {'dog': 'Mammalia', 'cat': 'Mammalia', 'pig': 'Mammalia', 'parrot': 'Aves', 'cow': 'Mammalia'}
 
 while True:
     print("\nSelect an option by entering a number")
@@ -66,9 +67,11 @@ while True:
             
 
     elif choice == "2":
-        
-        for card in flashcards:
-            print(card)
+        # Iterate through flashcards dictionary
+        # The questions q are the keys, and the answers a are the values
+        for q, a in flashcards.items():
+            print(f"\nWhat class are {q}s in?")
+            print(f"Answer: {a}")
 
     elif choice == "3":
 
