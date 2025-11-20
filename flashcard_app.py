@@ -66,14 +66,23 @@ while True:
             
 
     elif choice == "2":
-         
         # Iterate through flashcards dictionary
         # The questions q are the keys, and the answers a are the values
         for q, a in flashcards.items():
             # Ask user question and save response into variable
             user_answer = input(f"\nWhat class are {q}s in? ")
+            
+            # Increment the count of cards completed
+            num_cards_completed += 1
             # Display user's answer and correct answer
             print(f"Your answer: {user_answer}, Correct answer: {a}")
+            
+            # Response deemed to be correct even if given in different case
+            if user_answer.lower() == a.lower():
+                
+                # Increment count of cards answered correctly
+                num_cards_correct += 1
+                print("Correct")
 
     elif choice == "3":
 
