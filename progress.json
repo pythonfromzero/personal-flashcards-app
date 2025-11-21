@@ -1,22 +1,13 @@
-[
-    {
-        "num_cards_practiced": 5,
-        "score": 20.0
-    },
-    {
-        "num_cards_practiced": 2,
-        "score": 50.0
-    },
-    {
-        "num_cards_practiced": 2,
-        "score": 50.0
-    },
-    {
-        "num_cards_practiced": 5,
-        "score": 20.0
-    },
-    {
-        "num_cards_practiced": 3,
-        "score": 33.33333333333333
-    }
-]
+{
+    "max_cards_per_session": 27,
+    "progress_history": [
+        {
+            "num_cards_practiced": 2,
+            "score": 50.0
+        },
+        {
+            "num_cards_practiced": 5,
+            "score": 20.0
+        }
+    ]
+}
