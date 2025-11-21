@@ -111,9 +111,7 @@ while True:
                     ## Let the user know what the range should be (Bonus task).
                     print(f"\nPlease enter a valid number bewteen 1 and {ABSOLUTE_MAX_CARDS}.")    
             else:
-                print(f"\nPlease enter a whole number number over 0.")
-
-            
+                print(f"\nPlease enter a whole number number over 0.")  
 
     elif choice == "2":
         
