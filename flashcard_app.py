@@ -4,6 +4,8 @@
 
 # Import the random module
 import random
+# Import json module
+import json
 
 # Welcome message
 print("Welcome to your personal flashcard trainer!")
@@ -29,7 +31,7 @@ flashcards = {}
 file_separator = ','
 
 # Open and read the file
-flashcard_file = "a.txt"
+flashcard_file = "flashcards.txt"
 try:
     with open(flashcard_file, 'r') as file:
         lines = file.readlines()
@@ -73,11 +75,29 @@ def display_score_info():
 def write_score_info():
     # Calculate score
     score = (num_cards_correct/num_cards_completed) * 100
-    # Open the file
-    with open('progress.txt', 'a') as file:
-        # Write score information and new line so next entry appears on
-        # row below
-        file.write(f"{num_cards_completed},{num_cards_correct},{score}\n")
+    data_to_append = {
+        "num_cards_practiced": num_cards_completed,
+        "score": score,
+    }
+
+    score_data = []
+    # Try opening the json file
+    try:
+        with open('progress.json', 'r') as file:
+            # Load file contents if found
+            score_data = json.load(file)
+    except FileNotFoundError:
+        # Otherwise do nothing so score_data is just an empty list
+        pass
+
+    # Append latest session data
+    score_data.append(data_to_append)
+
+    # Write out score_data with the latest session data appended
+    # to json file
+    with open('progress.json', 'w') as file:
+        json.dump(score_data, file, indent=4)
+
 
 while True:
     print("\nSelect an option by entering a number")
