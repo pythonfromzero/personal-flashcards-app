@@ -144,6 +144,7 @@ while True:
         
         # Reset the number of cards completed for each session
         num_cards_completed = 0
+        num_cards_correct = 0
 
         # Create a list from the flashcards dictionary items
         flashcards_list = list(flashcards.items())
@@ -173,10 +174,6 @@ while True:
             # Check if number of cards completed has hit the user's
             # preferred maximum number of cards
             if num_cards_completed >= max_cards:
-                print("\nWell done on completing your practice session!")
-                # Write score info out with each session completed
-                write_score_info()
-                display_score_info()
                 break
         
         print("\nWell done on completing your practice session!")
