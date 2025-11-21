@@ -29,8 +29,15 @@ flashcards = {}
 file_separator = ','
 
 # Open and read the file
-with open('flashcards.txt', 'r') as file:
-    lines = file.readlines()
+flashcard_file = "a.txt"
+try:
+    with open(flashcard_file, 'r') as file:
+        lines = file.readlines()
+except:
+    # Handle scenario where file is not found 
+    # and display comprehensible message to user.
+    print(f"The file {flashcard_file} is missing. Please add it to initialise your flashcards.")
+    exit()
 
 # Process each line
 # Each line has: question,answer
