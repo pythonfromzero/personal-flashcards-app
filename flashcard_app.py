@@ -33,6 +33,7 @@ with open('flashcards.txt', 'r') as file:
     lines = file.readlines()
 
 # Process each line
+# Each line has: question,answer
 for line in lines:
     # Remove whitespace/newlines
     line = line.strip()
@@ -76,7 +77,8 @@ while True:
     print("1: Set the number of cards you wish to practice")
     print("2: Start flashcards")
     print("3: Show the current score")
-    print("4: Exit")
+    print("4: View progress history") # Option to view progress history
+    print("5: Exit")
     
     
     choice = input("\nChoose an option: ")
@@ -115,6 +117,8 @@ while True:
 
     elif choice == "2":
         
+        # Reset the number of cards completed for each session
+        num_cards_completed = 0
 
         # Create a list from the flashcards dictionary items
         flashcards_list = list(flashcards.items())
@@ -141,17 +145,18 @@ while True:
             else:
                 print("Incorrect")
             
-            # Write score info out with each card practised
-            write_score_info()
-
             # Check if number of cards completed has hit the user's
             # preferred maximum number of cards
             if num_cards_completed >= max_cards:
                 print("\nWell done on completing your practice session!")
+                # Write score info out with each session completed
+                write_score_info()
                 display_score_info()
                 break
         
         print("\nWell done on completing your practice session!")
+        # Write score info out with each session completed
+        write_score_info()
         display_score_info()
 
     elif choice == "3":
@@ -159,6 +164,54 @@ while True:
         display_score_info()
 
     elif choice == "4":
+        #Session 4: 10 cards completed, score 60% 
+        # Open and read the file
+        with open('progress.txt', 'r') as file:
+            lines = file.readlines()
+
+        print("How many sessions would you like to view?")
+        num_sessions = int(input("Enter the number or 0 to show all: "))
+        print("What order would you like to see them in?")
+        print("1: Oldest")
+        print("2: Most recent")
+        order = input("Choose an option by entering 1 or 2: ")
+
+        # If the user wants to see all sessions, set num_sessions
+        # to the number of sessions available
+        if num_sessions==0:
+            num_sessions = len(lines) 
+
+        selected_lines = lines
+        if order =="2":
+            # Need to reverse order of list if 
+            # most recent first is selected
+            selected_lines = selected_lines[::-1]
+        selected_lines = selected_lines[:num_sessions]
+        
+        #TODO: Add handling of invalid inputs
+
+        # Process each line
+        # Each line has: num_cards_completed,num_cards_correct,score
+        # Enumerate to get the session number - assumes the 
+        # row number corresponds to the session number
+        for i, line in enumerate(selected_lines):
+            # Remove whitespace/newlines
+            line = line.strip()
+    
+            # Split by ',' separator
+            parts = line.split(file_separator)
+
+            # Extract num_cards_completed,num_cards_correct,score
+            # Name these variables something different 
+            # (e.g. saved_cards_completed, saved_cards_correct, saved_score) 
+            # so they don't write over those being used by the rest of the program
+            saved_cards_completed = parts[0]
+            saved_cards_correct = parts[1]
+            saved_score = parts[2]
+
+            print(f"Session {i}: {saved_cards_completed} cards completed, score {saved_score}%")
+
+    elif choice == "5":
         print(f"We hope you enjoyed your practice session today, {name}.")
         
         display_score_info()
