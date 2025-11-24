@@ -1,0 +1,24 @@
+{
+    "c3": {
+        "name": "Chih",
+        "max_cards": 3,
+        "progress_history": [
+            {
+                "num_cards_practiced": 5,
+                "score": 0.0
+            },
+            {
+                "num_cards_practiced": 5,
+                "score": 20.0
+            },
+            {
+                "num_cards_practiced": 5,
+                "score": 0.0
+            },
+            {
+                "num_cards_practiced": 2,
+                "score": 0.0
+            }
+        ]
+    }
+}

@@ -73,7 +73,7 @@ print("Is it your first time using this app?")
 # Input validation - ask question until answered correctly
 while True:
 
-    first_time = input("0: No \n1: Yes")
+    first_time = input("0: No \n1: Yes\n")
     # 0: It is not the user's first time, so they should have a username
     # 1: It is the user's first time, so they don't have a username yet
 
@@ -98,6 +98,7 @@ while True:
                     username = input("Enter your username: ")
                     # If it's not the user's first time, we need to get their data
                     user_data = all_user_data.get(username)
+                    
                     if isinstance(user_data, dict):
                         # If we find the data corresponding to the username, we can set the name
                         # and max_cards variables from the saved values or by asking the user
@@ -118,7 +119,9 @@ while True:
                         # Leave the loop
                         break
                     else:
+                        print("We can't find you in our database, are you sure you've spelt it correctly?\n")
                         num_attempts += 1
+                
 
             ## If either it is the user's first time or the maximum number of attempts has been 
             # reached, the user needs to create a new username
@@ -150,7 +153,8 @@ while True:
                             json.dump(all_user_data, file, indent=4)
                         # Break out of loop
                         break
-                              
+            # Break out of outer loop
+            break                  
         except FileNotFoundError:
             # Since the file is not there, there is no existing user_data 
             # so we have to start with empty dictionary and ask for the username
@@ -204,7 +208,7 @@ def set_max_cards():
                 # Set the max_cards variable with the user's preference
                 max_cards = entered_max_cards
                 # Confirm number maximum number of cards per session
-                print(f"\nI want to practice at most {max_cards} cards per session")
+                print(f"\nYou want to practice at most {max_cards} cards per session")
                 # Set the user_data dictionary "max_cards" field to the new value
                 user_data["max_cards"] = max_cards 
 
@@ -223,7 +227,7 @@ def set_max_cards():
 
 
 # Confirm name
-print(f"\nMy name is {name}")
+print(f"\nYour name is {name}")
 
 # Card and score variables
 num_cards_completed = 0
@@ -336,6 +340,7 @@ while True:
         set_max_cards() 
 
     elif choice == "2":
+        print(f"CHECK: max_cards: {max_cards}")
         
         # Reset the number of cards completed for each session
         num_cards_completed = 0
