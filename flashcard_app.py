@@ -9,7 +9,7 @@ import json
 
 # JSON structure for user data:
 #{
-#    "max_cards_per_session": 16, 
+#    "max_cards": 16, 
 #    "progress_history": [
 #    {
 #        "num_cards_practiced": 10,
@@ -21,7 +21,7 @@ import json
 #    }
 #]
 #}
-
+user_filename = "user.json"
 
 # Welcome message
 print("Welcome to your personal flashcard trainer!")
@@ -32,12 +32,25 @@ name = input("What is your name? ")
 # Absolute maximum number of cards so that the user can't ask for too many
 ABSOLUTE_MAX_CARDS = 100
 max_cards = 20 # Set a default value for max_cards
-user_filename = "progress.json"
-user_data = {}
+try: 
+    with open(user_filename, 'r') as file:
+        user_data = json.load(file)
+        max_cards = user_data["max_cards"] # This is the current value
+except FileNotFoundError:
+    pass
+
 
 # Function to set max_cards and save to json
 def set_max_cards():
-    # If no user preferences found, ask user
+    user_data = {}
+    # Initialise user_data with saved file data if available
+    try: 
+        with open(user_filename, 'r') as file:
+            user_data = json.load(file)
+            max_cards = user_data["max_cards"] # This is the current value
+    except FileNotFoundError:
+        pass
+
     while True:
         # Validation for input for maximum number of cards
 
@@ -59,27 +72,18 @@ def set_max_cards():
                 max_cards = entered_max_cards
                 # Confirm number maximum number of cards per session
                 print(f"\nI want to practice at most {max_cards} cards per session")
-                user_data["max_cards_per_session"] = max_cards
-                # Save value to json
+                # Set the user_data dictionary "max_cards" field to the new value
+                user_data["max_cards"] = max_cards 
+                # Save dictionary with the new value to json
                 with open(user_filename, 'w') as file:
                     json.dump(user_data, file, indent=4)
                 break
             else:
-                ## Let the user know what the range should be (Bonus task).
+                ## Let the user know what the range should be
                 print(f"\nPlease enter a valid number bewteen 1 and {ABSOLUTE_MAX_CARDS}.")    
         else:
             print(f"\nPlease enter a whole number number over 0.") 
 
-# Try getting the user's preferred number of cards from 
-# the json file
-try: 
-    with open(user_filename, 'r') as file:
-        user_data = json.load(file)
-        max_cards = user_data["max_cards_per_session"]
-except FileNotFoundError:
-    set_max_cards()
-
-    
 
 # Confirm name
 print(f"\nMy name is {name}")
@@ -153,8 +157,9 @@ def write_score_info():
         with open(user_filename, 'r') as file:
             # Load file contents if found
             user_data = json.load(file)
-            # Try to extract the progress_history containing the list of score data
-            # for different sessions. If it isn't there, set to empty list.
+            # Use safe extraction to get the progress_history 
+            # containing the list of score data for different sessions. 
+            # If it isn't there, set to empty list.
             score_data = user_data.get("progress_history", [])
     except FileNotFoundError:
         # Otherwise do nothing so score_data is just an empty list

@@ -8,6 +8,11 @@
         {
             "num_cards_practiced": 5,
             "score": 20.0
+        },
+        {
+            "num_cards_practiced": 5,
+            "score": 0.0
         }
-    ]
+    ],
+    "max_cards": 2
 }

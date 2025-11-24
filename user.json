@@ -1,0 +1,13 @@
+{
+    "max_cards": 2,
+    "progress_history": [
+        {
+            "num_cards_practiced": 5,
+            "score": 0.0
+        },
+        {
+            "num_cards_practiced": 2,
+            "score": 50.0
+        }
+    ]
+}
