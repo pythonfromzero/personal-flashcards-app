@@ -1,5 +1,5 @@
 {
-    "max_cards": 2,
+    "max_cards": 29,
     "progress_history": [
         {
             "num_cards_practiced": 5,
@@ -9,5 +9,6 @@
             "num_cards_practiced": 2,
             "score": 50.0
         }
-    ]
+    ],
+    "name": "C"
 }

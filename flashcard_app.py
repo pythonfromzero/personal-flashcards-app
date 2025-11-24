@@ -9,7 +9,7 @@ import json
 
 # JSON structure for user data:
 #{
-#    "max_cards": 16, 
+#    "max_cards": 10, 
 #    "progress_history": [
 #    {
 #        "num_cards_practiced": 10,
@@ -26,19 +26,37 @@ user_filename = "user.json"
 # Welcome message
 print("Welcome to your personal flashcard trainer!")
 
-# Fetch from user and save to variable
-name = input("What is your name? ")
-
+# Attempt to find name and max_cards in file or ask from user
+name = ""
 # Absolute maximum number of cards so that the user can't ask for too many
 ABSOLUTE_MAX_CARDS = 100
 max_cards = 20 # Set a default value for max_cards
 try: 
     with open(user_filename, 'r') as file:
         user_data = json.load(file)
-        max_cards = user_data["max_cards"] # This is the current value
+        name = user_data.get("name") # Value stored in dictionary
+        if not name:
+            # If name not found, ask user for it
+            name = input("What is your name? ")
+            user_data["name"] = name
+        # If max_cards not found, set to default value - the existing 
+        # value of max_cards
+        max_cards = user_data.get("max_cards", max_cards) # Value stored in dictionary
+        # Save these values to file
+        with open(user_filename, 'w') as file:
+            json.dump(user_data, file, indent=4)
 except FileNotFoundError:
-    pass
-
+    # Since the file is not there, there is no existing user_data 
+    # so we have to start with empty dictionary
+    user_data = {}
+    name = input("What is your name? ")
+    user_data["name"] = name
+    # Since we already have default value for max_cards, don't ask
+    # user (they can always change it later by choosing Option 1 below)
+    user_data["max_cards"] = max_cards
+    with open(user_filename, 'w') as file:
+        json.dump(user_data, file, indent=4)
+    
 
 # Function to set max_cards and save to json
 def set_max_cards():
