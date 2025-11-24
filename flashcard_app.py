@@ -147,7 +147,7 @@ while True:
                         # the username as the key
                         all_user_data[username] = user_data
                         with open(user_filename, 'w') as file:
-                            json.dump(user_data, file, indent=4)
+                            json.dump(all_user_data, file, indent=4)
                         # Break out of loop
                         break
                               
@@ -166,22 +166,20 @@ while True:
             # the username as the key
             all_user_data[username] = user_data
             with open(user_filename, 'w') as file:
-                json.dump(user_data, file, indent=4)
+                json.dump(all_user_data, file, indent=4)
             # Break out of loop
             break
     
 
-        
-        
-
-
 # Function to set max_cards and save to json
 def set_max_cards():
+    all_user_data = {}
     user_data = {}
     # Initialise user_data with saved file data if available
     try: 
         with open(user_filename, 'r') as file:
-            user_data = json.load(file)
+            all_user_data = json.load(file)
+            user_data = all_user_data[username]
             max_cards = user_data["max_cards"] # This is the current value
     except FileNotFoundError:
         pass
@@ -209,9 +207,13 @@ def set_max_cards():
                 print(f"\nI want to practice at most {max_cards} cards per session")
                 # Set the user_data dictionary "max_cards" field to the new value
                 user_data["max_cards"] = max_cards 
-                # Save dictionary with the new value to json
+
+                # Update all_user_data dictionary to include this new setting
+                all_user_data[username] = user_data
+
+                # Save all_user_data dictionary with the new value to json
                 with open(user_filename, 'w') as file:
-                    json.dump(user_data, file, indent=4)
+                    json.dump(all_user_data, file, indent=4)
                 break
             else:
                 ## Let the user know what the range should be
@@ -284,20 +286,25 @@ def write_score_info():
         "num_cards_practiced": num_cards_completed,
         "score": score,
     }
-
+    # Initialise all_user_data as empty dictionary
+    all_user_data = {}
+    # Initialise user_data as empty dictionary
+    user_data = {}
+    # Initialise score_data as empty dictionary
     score_data = []
     # Try opening the json file
     # Use user_file variable from above
     try:
         with open(user_filename, 'r') as file:
             # Load file contents if found
-            user_data = json.load(file)
+            all_user_data = json.load(file)
+            user_data = all_user_data[username]
             # Use safe extraction to get the progress_history 
             # containing the list of score data for different sessions. 
             # If it isn't there, set to empty list.
             score_data = user_data.get("progress_history", [])
     except FileNotFoundError:
-        # Otherwise do nothing so score_data is just an empty list
+        # Otherwise do nothing so score_data remains an empty list
         pass
 
     # Append latest session data
@@ -308,7 +315,9 @@ def write_score_info():
     with open(user_filename, 'w') as file:
         # Save the score data in the progress_history element
         user_data["progress_history"] = score_data
-        json.dump(user_data, file, indent=4)
+        # Save the user_data to the user's data in user_data
+        all_user_data[username] = user_data
+        json.dump(all_user_data, file, indent=4)
 
 
 while True:
