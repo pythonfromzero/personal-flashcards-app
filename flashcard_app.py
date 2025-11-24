@@ -49,7 +49,7 @@ import json
 #        }]
 #    }
 #}
-user_filename = "user.json"
+user_filename = "users.json"
 
 # Variable to limit the number of times the user
 # can enter their username incorrectly before they
