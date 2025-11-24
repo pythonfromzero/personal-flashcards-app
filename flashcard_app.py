@@ -65,7 +65,7 @@ username = None
 name = ""
 # Absolute maximum number of cards so that the user can't ask for too many
 ABSOLUTE_MAX_CARDS = 100
-max_cards = 20 # Set a default value for max_cards
+DEFAULT_MAX_CARDS = 20 # Set a default value for max_cards
 
 
 # Check if it is the user's first time
@@ -109,7 +109,7 @@ while True:
                             user_data["name"] = name
                         # If max_cards not found, set to default value - the existing 
                         # value of max_cards
-                        max_cards = user_data.get("max_cards", max_cards) # Value stored in dictionary
+                        max_cards = user_data.get("max_cards", DEFAULT_MAX_CARDS) # Value stored in dictionary
                     
                         # Save the user_data back to the master dictionary all_user_data
                         all_user_data[username] = user_data
@@ -144,7 +144,7 @@ while True:
                         user_data["name"] = name
                         # Since we already have default value for max_cards, don't ask
                         # user (they can always change it later by choosing Option 1 below)
-                        user_data["max_cards"] = max_cards
+                        user_data["max_cards"] = DEFAULT_MAX_CARDS
 
                         # Save this user_data to the master dictionary all_user_data with
                         # the username as the key
@@ -164,7 +164,7 @@ while True:
             user_data["name"] = name
             # Since we already have default value for max_cards, don't ask
             # user (they can always change it later by choosing Option 1 below)
-            user_data["max_cards"] = max_cards
+            user_data["max_cards"] = DEFAULT_MAX_CARDS
 
             # Save this user_data to the master dictionary all_user_data with
             # the username as the key
@@ -174,8 +174,20 @@ while True:
             # Break out of loop
             break
     
-
-# Function to set max_cards and save to json
+# Function to get max_cards from file
+def get_max_cards():
+    all_user_data = {}
+    user_data = {}
+    # Initialise user_data with saved file data if available
+    try: 
+        with open(user_filename, 'r') as file:
+            all_user_data = json.load(file)
+            user_data = all_user_data[username]
+            max_cards = user_data.get("max_cards", DEFAULT_MAX_CARDS)
+            return max_cards
+    except FileNotFoundError:
+        pass
+# Function for user to set and save a max_cards value to json
 def set_max_cards():
     all_user_data = {}
     user_data = {}
@@ -184,7 +196,7 @@ def set_max_cards():
         with open(user_filename, 'r') as file:
             all_user_data = json.load(file)
             user_data = all_user_data[username]
-            max_cards = user_data["max_cards"] # This is the current value
+            
     except FileNotFoundError:
         pass
 
@@ -205,12 +217,10 @@ def set_max_cards():
             # (between 1 and the absolute maximum number of cards)
             if entered_max_cards > 0 and entered_max_cards < ABSOLUTE_MAX_CARDS:
                     
-                # Set the max_cards variable with the user's preference
-                max_cards = entered_max_cards
                 # Confirm number maximum number of cards per session
-                print(f"\nYou want to practice at most {max_cards} cards per session")
-                # Set the user_data dictionary "max_cards" field to the new value
-                user_data["max_cards"] = max_cards 
+                print(f"\nYou want to practice at most {entered_max_cards} cards per session")
+                # Set the user_data dictionary "max_cards" field to the user entered value
+                user_data["max_cards"] = entered_max_cards
 
                 # Update all_user_data dictionary to include this new setting
                 all_user_data[username] = user_data
@@ -221,7 +231,7 @@ def set_max_cards():
                 break
             else:
                 ## Let the user know what the range should be
-                print(f"\nPlease enter a valid number bewteen 1 and {ABSOLUTE_MAX_CARDS}.")    
+                print(f"\nPlease enter a valid number between 1 and {ABSOLUTE_MAX_CARDS}.")    
         else:
             print(f"\nPlease enter a whole number number over 0.") 
 
@@ -340,6 +350,7 @@ while True:
         set_max_cards() 
 
     elif choice == "2":
+        max_cards = get_max_cards()
         print(f"CHECK: max_cards: {max_cards}")
         
         # Reset the number of cards completed for each session

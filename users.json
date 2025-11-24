@@ -1,7 +1,7 @@
 {
     "c3": {
         "name": "Chih",
-        "max_cards": 3,
+        "max_cards": 20,
         "progress_history": [
             {
                 "num_cards_practiced": 5,
