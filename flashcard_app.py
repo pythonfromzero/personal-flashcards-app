@@ -7,56 +7,173 @@ import random
 # Import json module
 import json
 
-# JSON structure for user data:
+# JSON structure for user data for multiple users:
 #{
-#    "max_cards": 10, 
-#    "progress_history": [
-#    {
-#        "num_cards_practiced": 10,
-#        "score": 0.8,
+#    "user1": {
+#        "max_cards": 10, 
+#        "name": "User 1",
+#        "progress_history": [
+#        {
+#            "num_cards_practiced": 10,
+#            "score": 0.8,
+#        },
+#        {
+#            "num_cards_practiced": 10,
+#            "score": 0.6,
+#        },
+#        {
+#            "num_cards_practiced": 10,
+#            "score": 0.5,
+#        }]
 #    },
-#    {
-#        "num_cards_practiced": 10,
-#        "score": 0.6,
+#    "user2": {
+#        "name": "User 2",
+#        "max_cards": 30, 
+#        "progress_history": [
+#        {
+#            "num_cards_practiced": 30,
+#            "score": 0.8,
+#        }]
+#    },
+#    "user3": {
+#        "name": "User 3",
+#        "max_cards": 16, 
+#        "progress_history": [
+#        {
+#            "num_cards_practiced": 16,
+#            "score": 0.5,
+#        },
+#        {
+#            "num_cards_practiced": 16,
+#            "score": 1.0,
+#        }]
 #    }
-#]
 #}
 user_filename = "user.json"
+
+# Variable to limit the number of times the user
+# can enter their username incorrectly before they
+# are forced to create a new one.
+MAX_USERNAME_ATTEMPTS = 3
 
 # Welcome message
 print("Welcome to your personal flashcard trainer!")
 
-# Attempt to find name and max_cards in file or ask from user
+# Initialise username to None since we need to set it explicitly
+# when the program starts
+username = None
 name = ""
 # Absolute maximum number of cards so that the user can't ask for too many
 ABSOLUTE_MAX_CARDS = 100
 max_cards = 20 # Set a default value for max_cards
-try: 
-    with open(user_filename, 'r') as file:
-        user_data = json.load(file)
-        name = user_data.get("name") # Value stored in dictionary
-        if not name:
-            # If name not found, ask user for it
+
+
+# Check if it is the user's first time
+print("Is it your first time using this app?")
+# Input validation - ask question until answered correctly
+while True:
+
+    first_time = input("0: No \n1: Yes")
+    # 0: It is not the user's first time, so they should have a username
+    # 1: It is the user's first time, so they don't have a username yet
+
+    if first_time!="0" and first_time!="1":
+        # Any input other than 0 or 1 is not valid so we need to prompt the user again
+        # with a clarifying message
+        print(f"Please enter either 0, if you have never used the app before or 1, if you have.")
+    else:
+        # Irrespective of whether the user has used the app before, 
+        # try to open the user_data file and load the data in it,
+        # otherwise initialise with empty dictionary
+        all_user_data = {}
+        try: 
+            with open(user_filename, 'r') as file:
+                all_user_data = json.load(file)
+
+            # Attempt to find name and max_cards in file or ask from user
+            num_attempts = 0
+            
+            if first_time=="0":
+                while num_attempts < MAX_USERNAME_ATTEMPTS:
+                    username = input("Enter your username: ")
+                    # If it's not the user's first time, we need to get their data
+                    user_data = all_user_data.get(username)
+                    if isinstance(user_data, dict):
+                        # If we find the data corresponding to the username, we can set the name
+                        # and max_cards variables from the saved values or by asking the user
+                        name = user_data.get("name") # Value stored in dictionary
+                        if not name:
+                            # If name not found, ask user for it
+                            name = input("What is your name? ")
+                            user_data["name"] = name
+                        # If max_cards not found, set to default value - the existing 
+                        # value of max_cards
+                        max_cards = user_data.get("max_cards", max_cards) # Value stored in dictionary
+                    
+                        # Save the user_data back to the master dictionary all_user_data
+                        all_user_data[username] = user_data
+                        # Save these values to file
+                        with open(user_filename, 'w') as file:
+                            json.dump(all_user_data, file, indent=4)
+                        # Leave the loop
+                        break
+                    else:
+                        num_attempts += 1
+
+            ## If either it is the user's first time or the maximum number of attempts has been 
+            # reached, the user needs to create a new username
+            if first_time=="1" or num_attempts >= MAX_USERNAME_ATTEMPTS:
+                # If it is the user's first time, we need to ask them to create a username
+                username = input("Create a username: ")
+
+                while True:
+                    # Keep asking the user for a username until they 
+                    # choose one that doesn't exist in all_user_data
+                    username = input("Create a username: ")
+                    # Check if the username is one of the keys in all_user_data
+                    if username in all_user_data:
+                        # If it already exists, prompt the user to create a different one
+                        print("This username already exists, please create a different one")
+                    else:
+                        user_data = {}
+                        username = input("Create a username: ")
+                        name = input("What is your name? ")
+                        user_data["name"] = name
+                        # Since we already have default value for max_cards, don't ask
+                        # user (they can always change it later by choosing Option 1 below)
+                        user_data["max_cards"] = max_cards
+
+                        # Save this user_data to the master dictionary all_user_data with
+                        # the username as the key
+                        all_user_data[username] = user_data
+                        with open(user_filename, 'w') as file:
+                            json.dump(user_data, file, indent=4)
+                        # Break out of loop
+                        break
+                              
+        except FileNotFoundError:
+            # Since the file is not there, there is no existing user_data 
+            # so we have to start with empty dictionary and ask for the username
+            user_data = {}
+            username = input("Create a username: ")
             name = input("What is your name? ")
             user_data["name"] = name
-        # If max_cards not found, set to default value - the existing 
-        # value of max_cards
-        max_cards = user_data.get("max_cards", max_cards) # Value stored in dictionary
-        # Save these values to file
-        with open(user_filename, 'w') as file:
-            json.dump(user_data, file, indent=4)
-except FileNotFoundError:
-    # Since the file is not there, there is no existing user_data 
-    # so we have to start with empty dictionary
-    user_data = {}
-    name = input("What is your name? ")
-    user_data["name"] = name
-    # Since we already have default value for max_cards, don't ask
-    # user (they can always change it later by choosing Option 1 below)
-    user_data["max_cards"] = max_cards
-    with open(user_filename, 'w') as file:
-        json.dump(user_data, file, indent=4)
+            # Since we already have default value for max_cards, don't ask
+            # user (they can always change it later by choosing Option 1 below)
+            user_data["max_cards"] = max_cards
+
+            # Save this user_data to the master dictionary all_user_data with
+            # the username as the key
+            all_user_data[username] = user_data
+            with open(user_filename, 'w') as file:
+                json.dump(user_data, file, indent=4)
+            # Break out of loop
+            break
     
+
+        
+        
+
 
 # Function to set max_cards and save to json
 def set_max_cards():
