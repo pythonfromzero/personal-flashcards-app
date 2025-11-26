@@ -299,6 +299,7 @@ def write_score_info():
         "num_cards_practiced": num_cards_completed,
         "score": score,
     }
+    # TODO: Include date/time stamp?
     # Initialise all_user_data as empty dictionary
     all_user_data = {}
     # Initialise user_data as empty dictionary
@@ -332,6 +333,23 @@ def write_score_info():
         all_user_data[username] = user_data
         json.dump(all_user_data, file, indent=4)
 
+def get_score_info():
+    score_data = []
+    # Open and read the file
+    try:
+        with open(user_filename, 'r') as file:
+            # Load file contents if found
+            all_user_data = json.load(file)
+            user_data = all_user_data[username]
+            # Use safe extraction to get the progress_history 
+            # containing the list of score data for different sessions. 
+            # If it isn't there, set to empty list.
+            return user_data.get("progress_history", [])
+        
+    except FileNotFoundError:
+        return []
+        
+        
 
 while True:
     print("\nSelect an option by entering a number")
@@ -395,21 +413,8 @@ while True:
         display_score_info()
 
     elif choice == "4":
-        #Session 4: 10 cards completed, score 60% 
-        score_data = []
-        # Open and read the file
-        try:
-            with open(user_filename, 'r') as file:
-                # Load file contents if found
-                all_user_data = json.load(file)
-                user_data = all_user_data[username]
-                # Use safe extraction to get the progress_history 
-                # containing the list of score data for different sessions. 
-                # If it isn't there, set to empty list.
-                score_data = user_data.get("progress_history", [])
-        except FileNotFoundError:
-            pass
-
+        
+        score_data = get_score_info()
         if not score_data:
             # Let user know if there is no progress history data yet
             print("We can't find any progress history for you yet.")
@@ -424,56 +429,54 @@ while True:
             # If the user wants to see all sessions, set num_sessions
             # to the number of sessions available
             if num_sessions==0:
-                num_sessions = len(lines) 
+                num_sessions = len(score_data) 
 
-            selected_lines = lines
+            selected_sessions = score_data
             if order =="2":
                 # Need to reverse order of list if 
                 # most recent first is selected
-                selected_lines = selected_lines[::-1]
-                selected_lines = selected_lines[:num_sessions]
+                selected_sessions = selected_sessions[::-1]
+                selected_sessions = selected_sessions[:num_sessions]
         
             #TODO: Add handling of invalid inputs
 
-            # Process each line
-            # Each line has: num_cards_completed,num_cards_correct,score
-            # Enumerate to get the session number - assumes the 
-            # row number corresponds to the session number
-            for i, line in enumerate(selected_lines):
-                # Remove whitespace/newlines
-                line = line.strip()
-    
-                # Split by ',' separator
-                parts = line.split(file_separator)
-
-                # Extract num_cards_completed,num_cards_correct,score
+            # Extract num_cards_completed and score from each
+            # session's dictionary structure
+            for i, session in enumerate(selected_sessions):
+                
+                # Extract num_cards_completed and score
                 # Name these variables something different 
-                # (e.g. saved_cards_completed, saved_cards_correct, saved_score) 
+                # (e.g. saved_cards_completed, saved_score) 
                 # so they don't write over those being used by the rest of the program
-                saved_cards_completed = parts[0]
-                saved_cards_correct = parts[1]
-                saved_score = parts[2]
+                saved_cards_completed = session["num_cards_practiced"]
+                saved_score = session["score"]
 
-                print(f"Session {i}: {saved_cards_completed} cards completed, score {saved_score}%")
+                # Include number (counting from 1 rather than 0) for readability 
+                # But does not correspond to session number
+                print(f"{i+1}: {saved_cards_completed} cards completed, score {saved_score}%")
+                # TODO: Include date/time stamp?
 
     elif choice == "5":
         print(f"We hope you enjoyed your practice session today, {name}.")
-        
-        display_score_info()
+        if num_cards_completed > 0:
+            display_score_info()
 
-        # Display feedback message based on score
-        if score > 90 and score <= 100:
-            print("Excellent work!")
-        elif score > 70 and score <= 90:
-            print("Good job!")
-        elif score > 50 and score <= 70:
-            print("Keep practicing!")
-        elif score > 0 and score <= 50: 
-            print("Need more study time!")
+            # Calculate score for feedback messages
+            score = (num_cards_correct/num_cards_completed) * 100
+
+            # Display feedback message based on score
+            if score > 90 and score <= 100:
+                print("Excellent work!")
+            elif score > 70 and score <= 90:
+                print("Good job!")
+            elif score > 50 and score <= 70:
+                print("Keep practicing!")
+            elif score > 0 and score <= 50: 
+                print("Need more study time!")
         
         print("Look forward to seeing you again soon!")
         break
     
     else:
         # Clarify instruction to get valid input
-        print("\nInvalid value entered. Please make sure you enter just a single digit (no other words): 1, 2, 3 or 4, to select an option.")
+        print("\nInvalid value entered. Please make sure you enter just a single digit (no other words): 1, 2, 3, 4 or 5 to select an option.")
