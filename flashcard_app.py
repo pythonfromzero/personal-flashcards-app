@@ -126,9 +126,7 @@ while True:
             ## If either it is the user's first time or the maximum number of attempts has been 
             # reached, the user needs to create a new username
             if first_time=="1" or num_attempts >= MAX_USERNAME_ATTEMPTS:
-                # If it is the user's first time, we need to ask them to create a username
-                username = input("Create a username: ")
-
+                
                 while True:
                     # Keep asking the user for a username until they 
                     # choose one that doesn't exist in all_user_data
@@ -139,7 +137,6 @@ while True:
                         print("This username already exists, please create a different one")
                     else:
                         user_data = {}
-                        username = input("Create a username: ")
                         name = input("What is your name? ")
                         user_data["name"] = name
                         # Since we already have default value for max_cards, don't ask
@@ -186,7 +183,9 @@ def get_max_cards():
             max_cards = user_data.get("max_cards", DEFAULT_MAX_CARDS)
             return max_cards
     except FileNotFoundError:
-        pass
+        # If no value found in file, return the default value
+        return DEFAULT_MAX_CARDS
+    
 # Function for user to set and save a max_cards value to json
 def set_max_cards():
     all_user_data = {}
@@ -351,7 +350,6 @@ while True:
 
     elif choice == "2":
         max_cards = get_max_cards()
-        print(f"CHECK: max_cards: {max_cards}")
         
         # Reset the number of cards completed for each session
         num_cards_completed = 0
@@ -398,51 +396,65 @@ while True:
 
     elif choice == "4":
         #Session 4: 10 cards completed, score 60% 
+        score_data = []
         # Open and read the file
-        with open('progress.txt', 'r') as file:
-            lines = file.readlines()
+        try:
+            with open(user_filename, 'r') as file:
+                # Load file contents if found
+                all_user_data = json.load(file)
+                user_data = all_user_data[username]
+                # Use safe extraction to get the progress_history 
+                # containing the list of score data for different sessions. 
+                # If it isn't there, set to empty list.
+                score_data = user_data.get("progress_history", [])
+        except FileNotFoundError:
+            pass
 
-        print("How many sessions would you like to view?")
-        num_sessions = int(input("Enter the number or 0 to show all: "))
-        print("What order would you like to see them in?")
-        print("1: Oldest")
-        print("2: Most recent")
-        order = input("Choose an option by entering 1 or 2: ")
+        if not score_data:
+            # Let user know if there is no progress history data yet
+            print("We can't find any progress history for you yet.")
+        else:
+            print("How many sessions would you like to view?")
+            num_sessions = int(input("Enter the number or 0 to show all: "))
+            print("What order would you like to see them in?")
+            print("1: Oldest")
+            print("2: Most recent")
+            order = input("Choose an option by entering 1 or 2: ")
 
-        # If the user wants to see all sessions, set num_sessions
-        # to the number of sessions available
-        if num_sessions==0:
-            num_sessions = len(lines) 
+            # If the user wants to see all sessions, set num_sessions
+            # to the number of sessions available
+            if num_sessions==0:
+                num_sessions = len(lines) 
 
-        selected_lines = lines
-        if order =="2":
-            # Need to reverse order of list if 
-            # most recent first is selected
-            selected_lines = selected_lines[::-1]
-        selected_lines = selected_lines[:num_sessions]
+            selected_lines = lines
+            if order =="2":
+                # Need to reverse order of list if 
+                # most recent first is selected
+                selected_lines = selected_lines[::-1]
+                selected_lines = selected_lines[:num_sessions]
         
-        #TODO: Add handling of invalid inputs
+            #TODO: Add handling of invalid inputs
 
-        # Process each line
-        # Each line has: num_cards_completed,num_cards_correct,score
-        # Enumerate to get the session number - assumes the 
-        # row number corresponds to the session number
-        for i, line in enumerate(selected_lines):
-            # Remove whitespace/newlines
-            line = line.strip()
+            # Process each line
+            # Each line has: num_cards_completed,num_cards_correct,score
+            # Enumerate to get the session number - assumes the 
+            # row number corresponds to the session number
+            for i, line in enumerate(selected_lines):
+                # Remove whitespace/newlines
+                line = line.strip()
     
-            # Split by ',' separator
-            parts = line.split(file_separator)
+                # Split by ',' separator
+                parts = line.split(file_separator)
 
-            # Extract num_cards_completed,num_cards_correct,score
-            # Name these variables something different 
-            # (e.g. saved_cards_completed, saved_cards_correct, saved_score) 
-            # so they don't write over those being used by the rest of the program
-            saved_cards_completed = parts[0]
-            saved_cards_correct = parts[1]
-            saved_score = parts[2]
+                # Extract num_cards_completed,num_cards_correct,score
+                # Name these variables something different 
+                # (e.g. saved_cards_completed, saved_cards_correct, saved_score) 
+                # so they don't write over those being used by the rest of the program
+                saved_cards_completed = parts[0]
+                saved_cards_correct = parts[1]
+                saved_score = parts[2]
 
-            print(f"Session {i}: {saved_cards_completed} cards completed, score {saved_score}%")
+                print(f"Session {i}: {saved_cards_completed} cards completed, score {saved_score}%")
 
     elif choice == "5":
         print(f"We hope you enjoyed your practice session today, {name}.")
