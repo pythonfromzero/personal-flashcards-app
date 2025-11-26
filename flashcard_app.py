@@ -333,6 +333,8 @@ def write_score_info():
         all_user_data[username] = user_data
         json.dump(all_user_data, file, indent=4)
 
+# Fetches progress history from json file
+# Empty list returned if history or file not found
 def get_score_info():
     score_data = []
     # Open and read the file
