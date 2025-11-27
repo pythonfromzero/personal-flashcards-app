@@ -335,7 +335,7 @@ def write_score_info():
 
 # Fetches progress history from json file
 # Empty list returned if history or file not found
-def get_score_info():
+def get_progress_history():
     score_data = []
     # Open and read the file
     try:
@@ -416,7 +416,7 @@ while True:
 
     elif choice == "4":
         
-        score_data = get_score_info()
+        score_data = get_progress_history()
         if not score_data:
             # Let user know if there is no progress history data yet
             print("We can't find any progress history for you yet.")
