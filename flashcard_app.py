@@ -7,6 +7,43 @@ import random
 # Import json module
 import json
 
+### LOAD FLASHCARDS
+# Set flashcards dictionary from file
+# Initialize empty dictionary
+flashcards = {}
+file_separator = ','
+
+# Open and read the file
+flashcard_file = "flashcards.txt"
+try:
+    with open(flashcard_file, 'r') as file:
+        lines = file.readlines()
+except:
+    # Handle scenario where file is not found 
+    # and display comprehensible message to user.
+    print(f"The file {flashcard_file} is missing. Please add it to initialise your flashcards.")
+    exit()
+
+# Process each line
+# Each line has: question,answer
+for line in lines:
+    # Remove whitespace/newlines
+    line = line.strip()
+    
+    # Split by ',' separator
+    parts = line.split(file_separator)
+    
+    # Extract question and answer
+    question = parts[0]
+    answer = parts[1]
+    
+    # Add to dictionary
+    flashcards[question] = answer
+
+# Confirm loaded
+print(f"{len(flashcards)} flashcards loaded!")
+
+### LOAD USER DATA FILE/FIRST INTERACTION WITH USER
 # JSON structure for user data for multiple users:
 #{
 #    "user1": {
@@ -49,15 +86,39 @@ import json
 #        }]
 #    }
 #}
+
+# Filename for user details
 user_filename = "users.json"
+
+# Welcome message
+print("Welcome to your personal flashcard trainer!")
+
+# Initialise name variable to None since it will later be
+# set either by reading from file or asking the user
+name = ""
+# Absolute maximum number of cards so that the user can't ask for too many
+ABSOLUTE_MAX_CARDS = 100
+DEFAULT_MAX_CARDS = 20
 
 # Variable to limit the number of times the user
 # can enter their username incorrectly before they
 # are forced to create a new one.
 MAX_USERNAME_ATTEMPTS = 3
 
-# Welcome message
-print("Welcome to your personal flashcard trainer!")
+# Option selection numbers. Set as constants for readability
+SET_MAX_CARDS = "1"
+START_FLASHCARDS = "2"
+SHOW_CURRENT_SCORE_INFO = "3"
+VIEW_PROGRESS_HISTORY = "4"
+EXIT = "5"
+
+# Flashcard themes. Set as constants for readability
+EVENTS = "1"
+FAMOUS_PEOPLE = "2"
+NATURE = "3"
+
+# Sort order for progress history
+MOST_RECENT_FIRST = "2"
 
 # Initialise username to None since we need to set it explicitly
 # when the program starts
@@ -67,7 +128,7 @@ name = ""
 ABSOLUTE_MAX_CARDS = 100
 DEFAULT_MAX_CARDS = 20 # Set a default value for max_cards
 
-
+### SET THE USER AND INITIALISE PREFERENCES
 # Check if it is the user's first time
 print("Is it your first time using this app?")
 # Input validation - ask question until answered correctly
@@ -170,70 +231,6 @@ while True:
                 json.dump(all_user_data, file, indent=4)
             # Break out of loop
             break
-    
-# Function to get max_cards from file
-def get_max_cards():
-    all_user_data = {}
-    user_data = {}
-    # Initialise user_data with saved file data if available
-    try: 
-        with open(user_filename, 'r') as file:
-            all_user_data = json.load(file)
-            user_data = all_user_data[username]
-            max_cards = user_data.get("max_cards", DEFAULT_MAX_CARDS)
-            return max_cards
-    except FileNotFoundError:
-        # If no value found in file, return the default value
-        return DEFAULT_MAX_CARDS
-    
-# Function for user to set and save a max_cards value to json
-def set_max_cards():
-    all_user_data = {}
-    user_data = {}
-    # Initialise user_data with saved file data if available
-    try: 
-        with open(user_filename, 'r') as file:
-            all_user_data = json.load(file)
-            user_data = all_user_data[username]
-            
-    except FileNotFoundError:
-        pass
-
-    while True:
-        # Validation for input for maximum number of cards
-
-        # Fetch input from user but don't attempt to convert the input string 
-        # to int until certain it will work 
-        entered_max_cards = input("\nHow many cards would you like to practice each session? ")
-
-        # Check if input string represents an integer
-        if entered_max_cards.isdigit():
-
-            # Convert to integer data type
-            entered_max_cards = int(entered_max_cards)
-            
-            # Check if value is within the value range 
-            # (between 1 and the absolute maximum number of cards)
-            if entered_max_cards > 0 and entered_max_cards < ABSOLUTE_MAX_CARDS:
-                    
-                # Confirm number maximum number of cards per session
-                print(f"\nYou want to practice at most {entered_max_cards} cards per session")
-                # Set the user_data dictionary "max_cards" field to the user entered value
-                user_data["max_cards"] = entered_max_cards
-
-                # Update all_user_data dictionary to include this new setting
-                all_user_data[username] = user_data
-
-                # Save all_user_data dictionary with the new value to json
-                with open(user_filename, 'w') as file:
-                    json.dump(all_user_data, file, indent=4)
-                break
-            else:
-                ## Let the user know what the range should be
-                print(f"\nPlease enter a valid number between 1 and {ABSOLUTE_MAX_CARDS}.")    
-        else:
-            print(f"\nPlease enter a whole number number over 0.") 
-
 
 # Confirm name
 print(f"\nYour name is {name}")
@@ -243,43 +240,7 @@ num_cards_completed = 0
 num_cards_correct = 0
 score = 0
 
-
-# Set flashcards dictionary from file
-# Initialize empty dictionary
-flashcards = {}
-file_separator = ','
-
-# Open and read the file
-flashcard_file = "flashcards.txt"
-try:
-    with open(flashcard_file, 'r') as file:
-        lines = file.readlines()
-except:
-    # Handle scenario where file is not found 
-    # and display comprehensible message to user.
-    print(f"The file {flashcard_file} is missing. Please add it to initialise your flashcards.")
-    exit()
-
-# Process each line
-# Each line has: question,answer
-for line in lines:
-    # Remove whitespace/newlines
-    line = line.strip()
-    
-    # Split by ',' separator
-    parts = line.split(file_separator)
-    
-    # Extract question and answer
-    question = parts[0]
-    answer = parts[1]
-    
-    # Add to dictionary
-    flashcards[question] = answer
-
-# Confirm loaded
-print(f"{len(flashcards)} flashcards loaded!")
-
-
+### FUNCTIONS
 # Function to calculate and display score information
 def display_score_info():
 
@@ -350,10 +311,73 @@ def get_progress_history():
         
     except FileNotFoundError:
         return []
-        
-        
 
-while True:
+# Function to get max_cards from file
+def get_max_cards():
+    all_user_data = {}
+    user_data = {}
+    # Initialise user_data with saved file data if available
+    try: 
+        with open(user_filename, 'r') as file:
+            all_user_data = json.load(file)
+            user_data = all_user_data[username]
+            max_cards = user_data.get("max_cards", DEFAULT_MAX_CARDS)
+            return max_cards
+    except FileNotFoundError:
+        # If no value found in file, return the default value
+        return DEFAULT_MAX_CARDS
+    
+# Function for user to set and save a max_cards value to json
+def set_max_cards():
+    all_user_data = {}
+    user_data = {}
+    # Initialise user_data with saved file data if available
+    try: 
+        with open(user_filename, 'r') as file:
+            all_user_data = json.load(file)
+            user_data = all_user_data[username]
+            
+    except FileNotFoundError:
+        pass
+
+    while True:
+        # Validation for input for maximum number of cards
+
+        # Fetch input from user but don't attempt to convert the input string 
+        # to int until certain it will work 
+        entered_max_cards = input("\nHow many cards would you like to practice each session? ")
+
+        # Check if input string represents an integer
+        if entered_max_cards.isdigit():
+
+            # Convert to integer data type
+            entered_max_cards = int(entered_max_cards)
+            
+            # Check if value is within the value range 
+            # (between 1 and the absolute maximum number of cards)
+            if entered_max_cards > 0 and entered_max_cards < ABSOLUTE_MAX_CARDS:
+                    
+                # Confirm number maximum number of cards per session
+                print(f"\nYou want to practice at most {entered_max_cards} cards per session")
+                # Set the user_data dictionary "max_cards" field to the user entered value
+                user_data["max_cards"] = entered_max_cards
+
+                # Update all_user_data dictionary to include this new setting
+                all_user_data[username] = user_data
+
+                # Save all_user_data dictionary with the new value to json
+                with open(user_filename, 'w') as file:
+                    json.dump(all_user_data, file, indent=4)
+                break
+            else:
+                ## Let the user know what the range should be
+                print(f"\nPlease enter a valid number between 1 and {ABSOLUTE_MAX_CARDS}.")    
+        else:
+            print(f"\nPlease enter a whole number number over 0.") 
+
+# Function to display menu options 
+# and return user's input
+def app_menu_option():
     print("\nSelect an option by entering a number")
     print("1: Set the number of cards you wish to practice")
     print("2: Start flashcards")
@@ -361,14 +385,20 @@ while True:
     print("4: View progress history") # Option to view progress history
     print("5: Exit")
     
+    return input("\nChoose an option: ")
     
-    choice = input("\nChoose an option: ")
     
-    if choice == "1":
+
+### APP MENU LOOP  
+while True:
+    
+    choice = app_menu_option
+    
+    if choice == SET_MAX_CARDS:
 
         set_max_cards() 
 
-    elif choice == "2":
+    elif choice == START_FLASHCARDS:
         max_cards = get_max_cards()
         
         # Reset the number of cards completed for each session
@@ -384,10 +414,11 @@ while True:
         # may end up practicing fewer cards than they specified  
         for q, a in flashcards_list:
             # Ask user question and save response into variable
-            user_answer = input(f"\nWhat class are {q}s in? ")
+            user_answer = input(f"\nQuestion: {q}\n")
             
             # Increment the count of cards completed
             num_cards_completed += 1
+            
             # Display user's answer and correct answer
             print(f"Your answer: {user_answer}, Correct answer: {a}")
             
@@ -410,11 +441,11 @@ while True:
         write_score_info()
         display_score_info()
 
-    elif choice == "3":
+    elif choice == SHOW_CURRENT_SCORE_INFO:
 
         display_score_info()
 
-    elif choice == "4":
+    elif choice == VIEW_PROGRESS_HISTORY:
         
         score_data = get_progress_history()
         if not score_data:
@@ -434,7 +465,7 @@ while True:
                 num_sessions = len(score_data) 
 
             selected_sessions = score_data
-            if order =="2":
+            if order == MOST_RECENT_FIRST:
                 # Need to reverse order of list if 
                 # most recent first is selected
                 selected_sessions = selected_sessions[::-1]
@@ -458,7 +489,7 @@ while True:
                 print(f"{i+1}: {saved_cards_completed} cards completed, score {saved_score}%")
                 # TODO: Include date/time stamp?
 
-    elif choice == "5":
+    elif choice == EXIT:
         print(f"We hope you enjoyed your practice session today, {name}.")
         if num_cards_completed > 0:
             display_score_info()
@@ -478,7 +509,10 @@ while True:
         
         print("Look forward to seeing you again soon!")
         break
-    
+
     else:
         # Clarify instruction to get valid input
         print("\nInvalid value entered. Please make sure you enter just a single digit (no other words): 1, 2, 3, 4 or 5 to select an option.")
+
+    
+    

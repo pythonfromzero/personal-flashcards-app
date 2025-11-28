@@ -20,5 +20,23 @@
                 "score": 0.0
             }
         ]
+    },
+    "gho": {
+        "name": "gho",
+        "max_cards": 2,
+        "progress_history": [
+            {
+                "num_cards_practiced": 2,
+                "score": 50.0
+            },
+            {
+                "num_cards_practiced": 2,
+                "score": 0.0
+            }
+        ]
+    },
+    "g": {
+        "name": "g",
+        "max_cards": 20
     }
 }
