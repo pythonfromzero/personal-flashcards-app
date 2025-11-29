@@ -386,8 +386,8 @@ def topic_option():
 # Returns a dictionary of flashcards
 def load_flashcards(topic):
     ### LOAD FLASHCARDS
-    # Set flashcards dictionary from file
-    # Initialize empty dictionary
+    # Set flashcards list from file
+    # Initialize empty list
     flashcards = []
     file_separator = ','
 
