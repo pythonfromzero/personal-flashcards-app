@@ -7,41 +7,6 @@ import random
 # Import json module
 import json
 
-### LOAD FLASHCARDS
-# Set flashcards dictionary from file
-# Initialize empty dictionary
-flashcards = {}
-file_separator = ','
-
-# Open and read the file
-flashcard_file = "flashcards.txt"
-try:
-    with open(flashcard_file, 'r') as file:
-        lines = file.readlines()
-except:
-    # Handle scenario where file is not found 
-    # and display comprehensible message to user.
-    print(f"The file {flashcard_file} is missing. Please add it to initialise your flashcards.")
-    exit()
-
-# Process each line
-# Each line has: question,answer
-for line in lines:
-    # Remove whitespace/newlines
-    line = line.strip()
-    
-    # Split by ',' separator
-    parts = line.split(file_separator)
-    
-    # Extract question and answer
-    question = parts[0]
-    answer = parts[1]
-    
-    # Add to dictionary
-    flashcards[question] = answer
-
-# Confirm loaded
-print(f"{len(flashcards)} flashcards loaded!")
 
 ### LOAD USER DATA FILE/FIRST INTERACTION WITH USER
 # JSON structure for user data for multiple users:
@@ -106,16 +71,16 @@ DEFAULT_MAX_CARDS = 20
 MAX_USERNAME_ATTEMPTS = 3
 
 # Option selection numbers. Set as constants for readability
-SET_MAX_CARDS = "1"
-START_FLASHCARDS = "2"
-SHOW_CURRENT_SCORE_INFO = "3"
-VIEW_PROGRESS_HISTORY = "4"
-EXIT = "5"
+MENU_SET_MAX_CARDS = "1"
+MENU_START_FLASHCARDS = "2"
+MENU_SHOW_CURRENT_SCORE_INFO = "3"
+MENU_VIEW_PROGRESS_HISTORY = "4"
+MENU_EXIT = "5"
 
-# Flashcard themes. Set as constants for readability
-EVENTS = "1"
-FAMOUS_PEOPLE = "2"
-NATURE = "3"
+# Flashcard topics. Set as constants for readability
+TOPIC_EVENTS = "1"
+TOPIC_FAMOUS_PEOPLE = "2"
+TOPIC_NATURE = "3"
 
 # Sort order for progress history
 MOST_RECENT_FIRST = "2"
@@ -376,37 +341,119 @@ def set_max_cards():
             print(f"\nPlease enter a whole number number over 0.") 
 
 # Function to display menu options 
-# and return user's input
+# and return user's input if valid
 def app_menu_option():
-    print("\nSelect an option by entering a number")
-    print("1: Set the number of cards you wish to practice")
-    print("2: Start flashcards")
-    print("3: Show the current score")
-    print("4: View progress history") # Option to view progress history
-    print("5: Exit")
+    while True:
+        print("\nSelect an option by entering a number")
+        print("1: Set the number of cards you wish to practice")
+        print("2: Start flashcards")
+        print("3: Show the current score")
+        print("4: View progress history") # Option to view progress history
+        print("5: Exit")
+        selected_option = input("\nChoose an option: ")
+        if selected_option in {
+                MENU_SET_MAX_CARDS, 
+                MENU_START_FLASHCARDS, 
+                MENU_SHOW_CURRENT_SCORE_INFO, 
+                MENU_VIEW_PROGRESS_HISTORY, 
+                MENU_EXIT
+            }:
+            return selected_option
+        else:
+            # Clarify instruction to get valid input
+            print("\nInvalid value entered. Please make sure you enter just a single digit (no other words): 1, 2, 3, 4 or 5 to select an option.")
+
+# Function to display topic options
+# and return user's input if valid
+def topic_option():
+    while True:
+        print("\nSelect a topic:")
+        print("1: Events")
+        print("2: Famous people")
+        print("3: Nature")
+        selected_option = input("\nChoose an option: ")
+        if selected_option in {
+            TOPIC_EVENTS,
+            TOPIC_FAMOUS_PEOPLE,
+            TOPIC_NATURE
+        }:
+            return selected_option
+        else:
+            # Clarify instruction to get valid input
+            print("\nInvalid value entered. Please make sure you enter just a single digit (no other words): 1, 2, or 3 to select an option.")
+
+# Function to load flashcards of a given topic
+# Returns a dictionary of flashcards
+def load_flashcards(topic):
+    ### LOAD FLASHCARDS
+    # Set flashcards dictionary from file
+    # Initialize empty dictionary
+    flashcards = []
+    file_separator = ','
+
+    flashcard_file = ""
+
+    # Set flashcard_file acording to topic selection
+    if topic == TOPIC_EVENTS:
+        flashcard_file = "Events.txt"
+    elif topic == TOPIC_FAMOUS_PEOPLE:
+        flashcard_file = "FamousPeople.txt"
+    elif topic == TOPIC_NATURE:
+        flashcard_file = "Nature.txt"
+
+    # Open and read the file
+    try:
+        # Assumes stored in subfolder flashcards/
+        with open(f"flashcards/{flashcard_file}", 'r') as file:
+            lines = file.readlines()
+    except:
+        # Handle scenario where file is not found 
+        # and display comprehensible message to user.
+        print(f"The file {flashcard_file} is missing. Please add it to initialise your flashcards.")
+        exit()
+
+    # Process each line
+    # Each line has: question,answer
+    for line in lines:
+        # Remove whitespace/newlines
+        line = line.strip()
     
-    return input("\nChoose an option: ")
+        # Split by ',' separator
+        question, answer = line.split(file_separator)
     
-    
+        # Add to list of flashcards
+        flashcards.append((question, answer))
+
+    # Confirm loaded
+    print(f"{len(flashcards)} flashcards loaded!")
+
+    # Return the loaded flashcards
+    return flashcards
+
 
 ### APP MENU LOOP  
 while True:
     
-    choice = app_menu_option
+    choice = app_menu_option()
     
-    if choice == SET_MAX_CARDS:
+    if choice == MENU_SET_MAX_CARDS:
 
         set_max_cards() 
 
-    elif choice == START_FLASHCARDS:
+    elif choice == MENU_START_FLASHCARDS:
         max_cards = get_max_cards()
-        
+
         # Reset the number of cards completed for each session
         num_cards_completed = 0
         num_cards_correct = 0
 
-        # Create a list from the flashcards dictionary items
-        flashcards_list = list(flashcards.items())
+        # Fetch the topic selection from the user
+        selected_topic = topic_option()
+
+        # Load the list of flashcards from the file 
+        # corresponding to the topic
+        flashcards_list = load_flashcards(topic=selected_topic)
+        print(flashcards_list)
         # Shuffle the list
         random.shuffle(flashcards_list)
         # Using a for loop means that the number of flashcards displayed
@@ -441,11 +488,11 @@ while True:
         write_score_info()
         display_score_info()
 
-    elif choice == SHOW_CURRENT_SCORE_INFO:
+    elif choice == MENU_SHOW_CURRENT_SCORE_INFO:
 
         display_score_info()
 
-    elif choice == VIEW_PROGRESS_HISTORY:
+    elif choice == MENU_VIEW_PROGRESS_HISTORY:
         
         score_data = get_progress_history()
         if not score_data:
@@ -469,8 +516,11 @@ while True:
                 # Need to reverse order of list if 
                 # most recent first is selected
                 selected_sessions = selected_sessions[::-1]
-                selected_sessions = selected_sessions[:num_sessions]
-        
+
+            # Select only the rows up to the number of sessions
+            # the user wishes to be included
+            selected_sessions = selected_sessions[:num_sessions]
+            
             #TODO: Add handling of invalid inputs
 
             # Extract num_cards_completed and score from each
@@ -489,7 +539,7 @@ while True:
                 print(f"{i+1}: {saved_cards_completed} cards completed, score {saved_score}%")
                 # TODO: Include date/time stamp?
 
-    elif choice == EXIT:
+    elif choice == MENU_EXIT:
         print(f"We hope you enjoyed your practice session today, {name}.")
         if num_cards_completed > 0:
             display_score_info()
@@ -510,9 +560,6 @@ while True:
         print("Look forward to seeing you again soon!")
         break
 
-    else:
-        # Clarify instruction to get valid input
-        print("\nInvalid value entered. Please make sure you enter just a single digit (no other words): 1, 2, 3, 4 or 5 to select an option.")
-
+    
     
     

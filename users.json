@@ -18,6 +18,10 @@
             {
                 "num_cards_practiced": 2,
                 "score": 0.0
+            },
+            {
+                "num_cards_practiced": 20,
+                "score": 0.0
             }
         ]
     },
@@ -37,6 +41,12 @@
     },
     "g": {
         "name": "g",
-        "max_cards": 20
+        "max_cards": 3,
+        "progress_history": [
+            {
+                "num_cards_practiced": 3,
+                "score": 0.0
+            }
+        ]
     }
 }
