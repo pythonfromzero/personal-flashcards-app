@@ -441,21 +441,15 @@ while True:
         set_max_cards() 
 
     elif choice == MENU_START_FLASHCARDS:
+        
         max_cards = get_max_cards()
 
         # Reset the number of cards completed for each session
         num_cards_completed = 0
         num_cards_correct = 0
 
-        # Fetch the topic selection from the user
-        selected_topic = topic_option()
-
-        # Load the list of flashcards from the file 
-        # corresponding to the topic
-        flashcards_list = load_flashcards(topic=selected_topic)
-        print(flashcards_list)
-        # Shuffle the list
-        random.shuffle(flashcards_list)
+        # Iterate through flashcards list of tuples
+        # Each tuple element of the list contains a question, answer pair
         # Using a for loop means that the number of flashcards displayed
         # is limited by the number of items in flashcards so the user
         # may end up practicing fewer cards than they specified  
@@ -468,7 +462,7 @@ while True:
             
             # Display user's answer and correct answer
             print(f"Your answer: {user_answer}, Correct answer: {a}")
-            
+
             # Response deemed to be correct even if given in different case
             if user_answer.lower() == a.lower():
                 
@@ -477,7 +471,7 @@ while True:
                 print("Correct")
             else:
                 print("Incorrect")
-            
+        
             # Check if number of cards completed has hit the user's
             # preferred maximum number of cards
             if num_cards_completed >= max_cards:
@@ -486,6 +480,7 @@ while True:
         print("\nWell done on completing your practice session!")
         # Write score info out with each session completed
         write_score_info()
+        # Display score info at the end of a session
         display_score_info()
 
     elif choice == MENU_SHOW_CURRENT_SCORE_INFO:
